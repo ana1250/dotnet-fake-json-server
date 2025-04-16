@@ -4,6 +4,7 @@ using FakeServer.Common;
 using FakeServer.Common.Formatters;
 using FakeServer.CustomResponse;
 using FakeServer.GraphQL;
+using FakeServer.Health;
 using FakeServer.Jobs;
 using FakeServer.Simulate;
 using FakeServer.WebSockets;
@@ -11,6 +12,7 @@ using JsonFlatFileDataStore;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
@@ -46,6 +48,10 @@ public class Startup
             reloadBeforeGetCollection: Configuration.GetValue<bool>("DataStore:EagerDataReload")));
         services.AddSingleton<IMessageBus, MessageBus>();
         services.AddSingleton<JobsService>();
+        services.AddScoped<IHealthCheckService, HealthCheckService>();
+        services.AddSingleton<IServerTimeProvider, ServerTimeProvider>();
+
+
 
         services.Configure<AuthenticationSettings>(Configuration.GetSection("Authentication"));
         services.Configure<ApiSettings>(Configuration.GetSection("Api"));
